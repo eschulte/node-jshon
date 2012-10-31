@@ -5,12 +5,12 @@ fs  = require 'fs'                                  # -*- coffee-tab-width:2 -*-
 version = 20121030
 args  = []
 file  = '-'
-jsonp   = false
+jsonp   = false # TODO: implement
 sort    = false
 quiet   = false
 dodebug = false
-byvalue = false
-cont    = false
+byvalue = false # TODO: implement
+cont    = false # TODO: implement (maybe, check C code)
 inplace = false
 
 
