@@ -74,7 +74,7 @@ while argv.length > 0
 run = (stack) ->
   while args.length > 0
     arg = args.shift()
-    it = stack.shift()
+    it = stack.pop()
     console.log "# arg is #{JSON.stringify arg} top is #{JSON.stringify it}"
     if it == undefined and arg[1] == null
       out "internal error: stack underflow"
@@ -121,15 +121,23 @@ run = (stack) ->
       when 'extract'
         switch type it
           when 'array', 'object'
+            stack.push it
             stack.push it[arg[1]]
           else
             err "parse error: type '#{type it}' has no elements to extract"
             process.exit 1
       when 'insert'
-        console.log 'insert'
+        top = stack.pop()
+        switch type top
+          when 'array', 'object'
+            top[arg[1]] = it
+            stack.push top
+          else
+            err "parse error: type '#{type it}' has no elements to extract"
+            process.exit 1
       when 'delete'
         console.log 'delete'
-  if stack.length > 0 then out (JSON.stringify stack.shift())
+  if stack.length > 0 then out (JSON.stringify stack.pop())
   process.exit 0
 
 
