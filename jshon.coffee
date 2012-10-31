@@ -149,12 +149,19 @@ if file == '-'
     err "warning: nothing to read"
     run []
   else
+    debug "# reading from STDIN"
     json = ""
     process.stdin.resume()
     process.stdin.setEncoding 'utf8'
     process.stdin.on 'data', (chunk) -> json += chunk
-    process.stdin.on 'end', () -> run [JSON.parse(json)]
+    process.stdin.on 'end', () ->
+      if json.length > 0
+        run [JSON.parse(json)]
+      else
+        err "warning: nothing to read"
+        run []
 else
+  debug "# reading from file '#{file}'"
   fs.readFile file, 'utf8', (err,data) ->
     if err then throw err
     run [JSON.parse(data)]
