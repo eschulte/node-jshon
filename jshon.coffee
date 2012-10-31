@@ -101,9 +101,8 @@ run = (stack) ->
           else
             err "parse error: type #{type it} has no keys"
       when 'unstring'
-        out 'unstring'
-      when 'pop'
-        out 'pop'
+        out "#{it}"
+      when 'pop' then undefined
       when 'across'
         remaining = args
         args = []
