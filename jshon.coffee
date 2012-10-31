@@ -12,11 +12,9 @@ byvalue = false
 cont    = false
 inplace = false
 
-bail = (arg) ->
-
 
 # Utility functions
-err = (str) -> process.stderr.write str+"\n"
+err = (str) -> process.stderr.write str+"\n" unless quiet
 out = (str) -> process.stdout.write str+"\n"
 
 type = (it) ->
