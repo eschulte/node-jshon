@@ -28,8 +28,10 @@ type = (it) ->
 
 length = (it) ->
   my_type = type it
-  if my_type == "array" or my_type == "object"
+  if my_type == "array"
     it.length
+  else if my_type == "object"
+    (Object.keys it).length
   else
     console.log "parse error: type '#{my_type}' has no length"
     process.exit 1
@@ -66,7 +68,7 @@ while argv.length > 0
 # Read the input JSON and put it on the stack
 if file == '-'
   json = ""
-  process.stdin.resume
+  process.stdin.resume()
   process.stdin.setEncoding 'utf8'
   process.stdin.on 'data', (chunk) -> json += chunk
   process.stdin.on 'end', () -> run [JSON.parse(json)]
@@ -97,7 +99,11 @@ run = (stack) ->
       when 'pop'
         console.log 'pop'
       when 'across'
-        console.log 'across'
+        remaining = args
+        args = []
+        for el in it
+          stack.push el
+          args = args.concat remaining
       when 'string'
         console.log 'string'
       when 'nonstring'
