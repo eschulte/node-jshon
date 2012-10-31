@@ -67,26 +67,13 @@ while argv.length > 0
       process.exit 1
 
 
-# Read the input JSON and put it on the stack
-if file == '-'
-  json = ""
-  process.stdin.resume()
-  process.stdin.setEncoding 'utf8'
-  process.stdin.on 'data', (chunk) -> json += chunk
-  process.stdin.on 'end', () -> run [JSON.parse(json)]
-else
-  fs.readFile file, 'utf8', (err,data) ->
-    if err then throw err
-    run [JSON.parse(data)]
-
-
 # Run
 run = (stack) ->
   while args.length > 0
     arg = args.shift()
     it = stack.shift()
     console.log "# arg is #{JSON.stringify arg} top is #{JSON.stringify it}"
-    if it == undefined
+    if it == undefined and not arg[0] == 'string'
       out "internal error: stack underflow"
       process.exit 1
     switch arg[0]
@@ -119,7 +106,7 @@ run = (stack) ->
             err "parse error: type not mappable"
             process.exit 1
       when 'string'
-        console.log 'string'
+        out JSON.stringify arg[1]
       when 'nonstring'
         console.log 'nonstring'
       when 'extract'
@@ -129,3 +116,20 @@ run = (stack) ->
       when 'delete'
         console.log 'delete'
   process.exit 0
+
+
+# Read the input JSON and put it on the stack
+if file == '-'
+  if process.stdin.isTTY
+    err "warning: nothing to read"
+    run []
+  else
+    json = ""
+    process.stdin.resume()
+    process.stdin.setEncoding 'utf8'
+    process.stdin.on 'data', (chunk) -> json += chunk
+    process.stdin.on 'end', () -> run [JSON.parse(json)]
+else
+  fs.readFile file, 'utf8', (err,data) ->
+    if err then throw err
+    run [JSON.parse(data)]
