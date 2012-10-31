@@ -48,7 +48,7 @@ while argv.length > 0
     when '-V' then byvalue = true
     when '-C' then cont    = true
     when '-I' then inplace = true
-    when '-F' then file = argv.shift()
+    when '-F' then file    = argv.shift()
     when '-t' then args.push ['type',      0]
     when '-l' then args.push ['length',    0]
     when '-k' then args.push ['keys',      0]
