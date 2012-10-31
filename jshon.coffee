@@ -149,7 +149,11 @@ run = (stack) ->
       when 'delete'
         delete it[arg[1]]
         stack.push it
-  if stack.length > 0 then out (JSON.stringify (dosort stack.pop()))
+  if stack.length > 0
+    if inplace and file != '-'
+      fs.writeFile file, (JSON.stringify (dosort stack.pop()))
+    else
+      out (JSON.stringify (dosort stack.pop()))
   process.exit 0
 
 
