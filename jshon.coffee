@@ -8,14 +8,16 @@ file  = '-'
 jsonp   = false
 sort    = false
 quiet   = false
+dodebug = false
 byvalue = false
 cont    = false
 inplace = false
 
 
 # Utility functions
-err = (str) -> process.stderr.write str+"\n" unless quiet
-out = (str) -> process.stdout.write str+"\n"
+err   = (str) -> process.stderr.write str+"\n" unless quiet
+out   = (str) -> process.stdout.write str+"\n"
+debug = (str) -> console.log str if dodebug
 
 type = (it) ->
   switch typeof it
@@ -46,6 +48,7 @@ while argv.length > 0
     when '-P' then jsonp   = true
     when '-S' then sort    = true
     when '-Q' then quiet   = true
+    when '-D' then dodebug = true
     when '-V' then byvalue = true
     when '-C' then cont    = true
     when '-I' then inplace = true
@@ -71,6 +74,7 @@ while argv.length > 0
 # Run
 run = (stack) ->
   while args.length > 0
+    debug "# args:#{JSON.stringify args} stack:#{JSON.stringify stack}"
     arg = args.shift()
     it = stack.pop()
     if it == undefined and arg[1] == null
