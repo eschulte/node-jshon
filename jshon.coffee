@@ -24,7 +24,10 @@ type = (it) ->
     when "number" then "number"
     when "string" then "string"
     when "boolean" then "bool"
-    else (if it instanceof Array then 'array' else 'object')
+    else
+      if it instanceof Array then 'array'
+      else if it == null     then 'null'
+      else                        'object'
 
 length = (it) ->
   my_type = type it
@@ -49,12 +52,12 @@ while argv.length > 0
     when '-C' then cont    = true
     when '-I' then inplace = true
     when '-F' then file    = argv.shift()
-    when '-t' then args.push ['type',      0]
-    when '-l' then args.push ['length',    0]
-    when '-k' then args.push ['keys',      0]
-    when '-u' then args.push ['unstring',  0]
-    when '-p' then args.push ['pop',       0]
-    when '-a' then args.push ['across',    0]
+    when '-t' then args.push ['type',      null]
+    when '-l' then args.push ['length',    null]
+    when '-k' then args.push ['keys',      null]
+    when '-u' then args.push ['unstring',  null]
+    when '-p' then args.push ['pop',       null]
+    when '-a' then args.push ['across',    null]
     when '-s' then args.push ['string',    argv.shift()] # takes a value, encodes as json
     when '-n' then args.push ['nonstring', argv.shift()] # takes [true, false, null, array, object, integer, float]
     when '-e' then args.push ['extract',   argv.shift()] # takes an index (number or key)
@@ -73,7 +76,7 @@ run = (stack) ->
     arg = args.shift()
     it = stack.shift()
     console.log "# arg is #{JSON.stringify arg} top is #{JSON.stringify it}"
-    if it == undefined and not arg[0] == 'string'
+    if it == undefined and arg[1] == null
       out "internal error: stack underflow"
       process.exit 1
     switch arg[0]
@@ -94,27 +97,39 @@ run = (stack) ->
         remaining = args
         args = []
         switch type it
-          when "array"
+          when 'array'
             for el in it
               stack.push el
               args = args.concat remaining
-          when "object"
+          when 'object'
             for k,v of it
               stack.push v
               args = args.concat remaining
           else
-            err "parse error: type not mappable"
+            err 'parse error: type not mappable'
             process.exit 1
       when 'string'
         out JSON.stringify arg[1]
       when 'nonstring'
-        console.log 'nonstring'
+        switch arg[1]
+          when 'true'   then stack.push true
+          when 'false'  then stack.push false
+          when 'null'   then stack.push null
+          when 'array'  then stack.push []
+          when 'object' then stack.push {}
+          else err "parse error: illegal nonstring, \"#{argv[1]}\""; process.exit 1
       when 'extract'
-        console.log 'extract'
+        switch type it
+          when 'array', 'object'
+            stack.push it[arg[1]]
+          else
+            err "parse error: type '#{type it}' has no elements to extract"
+            process.exit 1
       when 'insert'
         console.log 'insert'
       when 'delete'
         console.log 'delete'
+  if stack.length > 0 then out (JSON.stringify stack.shift())
   process.exit 0
 
 
