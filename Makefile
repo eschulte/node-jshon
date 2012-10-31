@@ -1,28 +1,23 @@
 # jshon - command line JSON parsing
 
-CFLAGS := -std=c99 -Wall -pedantic -Wextra -Werror ${CFLAGS}
-LDLIBS  = -ljansson
-
 #VERSION=$(shell date +%Y%m%d)
 VERSION=$(shell git show -s --format="%ci" HEAD | cut -d ' ' -f 1 | tr -d '-')
 #VERSION=$(grep "^#define JSHONVER" | cut -d ' ' -f 3)
 
-all: jshon
+all: dist
 
-jshon: jshon.o
+%.js: %.coffee
+	coffee -c $<
 
-strip: jshon
-	strip --strip-all jshon
+jshon: jshon.js
+	echo "#!/usr/bin/env node" > $@; \
+	cat $< >> $@; \
+	chmod +x $@;
+
+dist: jshon.js
+	npm pack
 
 clean:
-	rm -f *.o jshon
+	rm jshon
 
-dist: clean
-	sed -i "s/#define JSHONVER .*/#define JSHONVER ${VERSION}/" jshon.c
-	mkdir jshon-${VERSION}
-	cp jshon.c jshon.1 Makefile jshon-${VERSION}
-	tar czf jshon-${VERSION}.tar.gz jshon-${VERSION}
-	${RM} -r jshon-${VERSION}
-
-.PHONY: all clean dist strip
-
+.PHONY: all clean dist

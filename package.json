@@ -1,0 +1,19 @@
+{ "name": "jshon"
+, "description": "JSON parser designed for maximum convenience within the shell"
+, "author": "Eric Schulte <schulte.eric@gmail.com>"
+, "version": "0.0.1"
+, "bin": "jshon"
+, "keywords":
+  [ "json"
+  , "shell"
+  , "command line"
+  ]
+, "homepage": "https://github.com/eschulte/node-jshon"
+, "bugs": { "url": "https://github.com/eschulte/node-jshon/issues" }
+, "repository":
+  { "type": "git"
+  , "url": "git://github.com/eschulte/node-jshon.git"
+  }
+, "dependencies": {}
+, "devDependencies": {}
+}
