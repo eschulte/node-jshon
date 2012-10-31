@@ -38,6 +38,16 @@ length = (it) ->
       err "parse error: type '#{my_type}' has no length"
       process.exit 1
 
+dosort = (it) ->
+  my_type = type it
+  switch my_type
+    when "array"  then it.sort()
+    when "object"
+      out = {}
+      (out[key] = it[key] for key in (Object.keys it).sort())
+      out
+    else it
+
 
 # Parse the arguments
 argv = process.argv
@@ -139,7 +149,7 @@ run = (stack) ->
       when 'delete'
         delete it[arg[1]]
         stack.push it
-  if stack.length > 0 then out (JSON.stringify stack.pop())
+  if stack.length > 0 then out (JSON.stringify (dosort stack.pop()))
   process.exit 0
 
 
