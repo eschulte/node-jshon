@@ -110,7 +110,7 @@ run = (stack) ->
             err 'parse error: type not mappable'
             process.exit 1
       when 'string'
-        out JSON.stringify arg[1]
+        stack.push arg[1]
       when 'nonstring'
         switch arg[1]
           when 'true'   then stack.push true
@@ -122,7 +122,6 @@ run = (stack) ->
       when 'extract'
         switch type it
           when 'array', 'object'
-            stack.push it
             stack.push it[arg[1]]
           else
             err "parse error: type '#{type it}' has no elements to extract"
@@ -131,7 +130,8 @@ run = (stack) ->
         top = stack.pop()
         switch type top
           when 'array', 'object'
-            top[arg[1]] = it
+            if arg[1] == 'append' then top.push it
+            else                       top[arg[1]] = it
             stack.push top
           else
             err "parse error: type '#{type it}' has no elements to extract"
