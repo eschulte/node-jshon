@@ -12,6 +12,7 @@ all: dist
 jshon: jshon.js
 	echo "#!/usr/bin/env node" > $@; \
 	cat $< >> $@; \
+	sed -i 's/^  version = .*;$$/  version = $(VERSION);/' $@; \
 	chmod +x $@;
 
 README.md: jshon.1
@@ -19,7 +20,7 @@ README.md: jshon.1
 	echo "" >> $@; echo "" >> $@; \
 	groff -man -Tascii -P-cbu $<|sed 's/^/    /' >> $@
 
-dist: jshon.js README.md
+dist: jshon README.md
 	npm pack
 
 clean:

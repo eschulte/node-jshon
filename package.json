@@ -3,6 +3,7 @@
 , "author": "Eric Schulte <schulte.eric@gmail.com>"
 , "version": "0.0.1"
 , "bin": "jshon"
+, "man": "jshon.1"
 , "keywords":
   [ "json"
   , "shell"
