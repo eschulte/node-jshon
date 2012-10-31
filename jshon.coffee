@@ -35,7 +35,7 @@ length = (it) ->
     when "array"  then it.length
     when "object" then (Object.keys it).length
     else
-      console.log "parse error: type '#{my_type}' has no length"
+      err "parse error: type '#{my_type}' has no length"
       process.exit 1
 
 
@@ -75,7 +75,6 @@ run = (stack) ->
   while args.length > 0
     arg = args.shift()
     it = stack.pop()
-    console.log "# arg is #{JSON.stringify arg} top is #{JSON.stringify it}"
     if it == undefined and arg[1] == null
       out "internal error: stack underflow"
       process.exit 1
@@ -136,7 +135,8 @@ run = (stack) ->
             err "parse error: type '#{type it}' has no elements to extract"
             process.exit 1
       when 'delete'
-        console.log 'delete'
+        delete it[arg[1]]
+        stack.push it
   if stack.length > 0 then out (JSON.stringify stack.pop())
   process.exit 0
 
