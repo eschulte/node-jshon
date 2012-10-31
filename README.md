@@ -1,7 +1,7 @@
-         A node.js clone of https://github.com/keenerd/jshon
-     likely incomplete, but basically functional, patches welcome
+                 A node.js clone of https://github.com/keenerd/jshon
+             likely incomplete, but basically functional, patches welcome
 
-            (the man page of the original jshon follows)
+                     (the man page of the original jshon follows)
 
     JSHON(1)                         Jshon Manual                         JSHON(1)
     
