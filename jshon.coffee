@@ -13,9 +13,6 @@ cont    = false
 inplace = false
 
 bail = (arg) ->
-  process.stdout.write "jshon: invalid option -- '#{arg}'\n"
-  process.stdout.write "Valid: -[P|S|Q|V|C|I] [-F path] -[t|l|k|u|p|a] -[s|n] value -[e|i|d] index\n"
-  process.exit 1
 
 
 # Utility functions
@@ -28,13 +25,12 @@ type = (it) ->
 
 length = (it) ->
   my_type = type it
-  if my_type == "array"
-    it.length
-  else if my_type == "object"
-    (Object.keys it).length
-  else
-    console.log "parse error: type '#{my_type}' has no length"
-    process.exit 1
+  switch my_type
+    when "array"  then it.length
+    when "object" then (Object.keys it).length
+    else
+      console.log "parse error: type '#{my_type}' has no length"
+      process.exit 1
 
 
 # Parse the arguments
@@ -62,7 +58,10 @@ while argv.length > 0
     when '-i' then args.push ['insert',    argv.shift()] # takes an index
     when '-d' then args.push ['delete',    argv.shift()] # takes an index
     when '--version' then process.stdout.write "#{version}\n"; process.exit 0
-    else bail arg
+    else
+      process.stdout.write "jshon: invalid option -- '#{arg}'\n"
+      process.stdout.write "Valid: -[P|S|Q|V|C|I] [-F path] -[t|l|k|u|p|a] -[s|n] value -[e|i|d] index\n"
+      process.exit 1
 
 
 # Read the input JSON and put it on the stack
@@ -101,9 +100,18 @@ run = (stack) ->
       when 'across'
         remaining = args
         args = []
-        for el in it
-          stack.push el
-          args = args.concat remaining
+        switch type it
+          when "array"
+            for el in it
+              stack.push el
+              args = args.concat remaining
+          when "object"
+            for k,v of it
+              stack.push v
+              args = args.concat remaining
+          else
+            console.log "parse error: type not mappable"
+            process.exit 1
       when 'string'
         console.log 'string'
       when 'nonstring'
