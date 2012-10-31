@@ -16,6 +16,9 @@ bail = (arg) ->
 
 
 # Utility functions
+err = (str) -> process.stderr.write str+"\n"
+out = (str) -> process.stdout.write str+"\n"
+
 type = (it) ->
   switch typeof it
     when "number" then "number"
@@ -59,8 +62,8 @@ while argv.length > 0
     when '-d' then args.push ['delete',    argv.shift()] # takes an index
     when '--version' then process.stdout.write "#{version}\n"; process.exit 0
     else
-      process.stdout.write "jshon: invalid option -- '#{arg}'\n"
-      process.stdout.write "Valid: -[P|S|Q|V|C|I] [-F path] -[t|l|k|u|p|a] -[s|n] value -[e|i|d] index\n"
+      err "jshon: invalid option -- '#{arg}'"
+      err "Valid: -[P|S|Q|V|C|I] [-F path] -[t|l|k|u|p|a] -[s|n] value -[e|i|d] index"
       process.exit 1
 
 
@@ -84,19 +87,23 @@ run = (stack) ->
     it = stack.shift()
     console.log "# arg is #{JSON.stringify arg} top is #{JSON.stringify it}"
     if it == undefined
-      console.log "internal error: stack underflow"
+      out "internal error: stack underflow"
       process.exit 1
     switch arg[0]
       when 'type'
-        console.log (type it)
+        out (type it)
       when 'length'
-        console.log (length it)
+        out (length it)
       when 'keys'
-        console.log 'keys'
+        switch type it
+          when "object"
+            stack.push Object.keys(it)
+          else
+            err "parse error: type #{type it} has no keys"
       when 'unstring'
-        console.log 'unstring'
+        out 'unstring'
       when 'pop'
-        console.log 'pop'
+        out 'pop'
       when 'across'
         remaining = args
         args = []
@@ -110,7 +117,7 @@ run = (stack) ->
               stack.push v
               args = args.concat remaining
           else
-            console.log "parse error: type not mappable"
+            err "parse error: type not mappable"
             process.exit 1
       when 'string'
         console.log 'string'
