@@ -76,7 +76,7 @@ run = (stack) ->
   while args.length > 0
     debug "# args:#{JSON.stringify args} stack:#{JSON.stringify stack}"
     arg = args.shift()
-    it = stack.pop()
+    it = stack.pop() unless arg[0] == 'string' or arg[0] == 'nonstring'
     if it == undefined and arg[1] == null
       out "internal error: stack underflow"
       process.exit 1
