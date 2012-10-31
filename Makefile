@@ -14,10 +14,15 @@ jshon: jshon.js
 	cat $< >> $@; \
 	chmod +x $@;
 
-dist: jshon.js
+README.md: jshon.1
+	echo "node.js clone of https://github.com/keenerd/jshon" > $@; \
+	echo "" >> $@; echo "" >> $@; \
+	groff -man -Tascii -P-cbu $<|sed 's/^/    /' >> $@
+
+dist: jshon.js README.md
 	npm pack
 
 clean:
-	rm jshon
+	rm -f jshon jshon.js jshon-*.tgz
 
 .PHONY: all clean dist
