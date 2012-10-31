@@ -1,8 +1,10 @@
-fs  = require 'fs'                                  # -*- coffee-tab-width:2 -*-
+# MIT licensed, Copyright (C) 2012  Eric Schulte      -*- coffee-tab-width:2 -*-
+
+fs  = require 'fs'
 
 
 # Global variables
-version = 20121030
+version = 'VERSION'
 args  = []
 file  = '-'
 jsonp   = false # TODO: implement

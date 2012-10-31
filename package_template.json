@@ -1,7 +1,8 @@
 { "name": "jshon"
 , "description": "JSON parser designed for maximum convenience within the shell"
 , "author": "Eric Schulte <schulte.eric@gmail.com>"
-, "version": "0.0.1"
+, "license": "MIT"
+, "version": "0.0.VERSION"
 , "bin": "jshon"
 , "man": "jshon.1"
 , "keywords":

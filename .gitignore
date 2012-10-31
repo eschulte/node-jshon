@@ -1,3 +1,4 @@
 *.js
 jshon
 jshon-*.tgz
+package.json

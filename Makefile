@@ -12,18 +12,21 @@ all: dist
 jshon: jshon.js
 	echo "#!/usr/bin/env node" > $@; \
 	cat $< >> $@; \
-	sed -i 's/^  version = .*;$$/  version = $(VERSION);/' $@; \
+	sed -i 's/VERSION/$(VERSION)/' $@; \
 	chmod +x $@;
 
-README.md: jshon.1
-	echo "node.js clone of https://github.com/keenerd/jshon" > $@; \
-	echo "" >> $@; echo "" >> $@; \
-	groff -man -Tascii -P-cbu $<|sed 's/^/    /' >> $@
+package.json: package_template.json
+	cp $< $@; sed -i 's/VERSION/$(VERSION)/' $@;
 
-dist: jshon README.md
+README.md: preamble jshon.1
+	rm -f $@; \
+	cat preamble >> $@; \
+	groff -man -Tascii -P-cbu jshon.1|sed 's/^/    /' >> $@
+
+dist: jshon README.md package.json
 	npm pack
 
 clean:
-	rm -f jshon jshon.js jshon-*.tgz
+	rm -f jshon jshon.js jshon-*.tgz package.json
 
 .PHONY: all clean dist
