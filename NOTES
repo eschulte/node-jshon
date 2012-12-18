@@ -1,0 +1,5 @@
+# -*- org -*-
+
+* TODO allow passing in integer/float values directly
+e.g.,
+: jshon -n object -n 9 -i number
