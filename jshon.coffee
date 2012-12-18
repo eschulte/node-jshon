@@ -76,7 +76,7 @@ while argv.length > 0
     when '-e' then args.push ['extract',   argv.shift()] # takes an index (number or key)
     when '-i' then args.push ['insert',    argv.shift()] # takes an index
     when '-d' then args.push ['delete',    argv.shift()] # takes an index
-    when '--version' then process.stdout.write "#{version}\n"; process.exit 0
+    when '--version' then out "#{version}"; process.exit 0
     else
       err "jshon: invalid option -- '#{arg}'"
       err "Valid: -[P|S|Q|V|C|I] [-F path] -[t|l|k|u|p|a] -[s|n] value -[e|i|d] index"
